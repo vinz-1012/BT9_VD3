@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <title>Quản Trị Người Dùng - Shop Web</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="toolbar">
+        <div>
+            <h1 style="font-size: 24px; font-weight: 800; color: var(--text-main);">Quản Trị Người Dùng</h1>
+            <p style="color: var(--text-muted); font-size: 13px;">
+                Tổng cộng <strong th:text="${totalUsers}">0</strong> người dùng trong hệ thống
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <form th:action="@{/users}" method="get" class="search-box">
+                <input type="text" name="keyword" th:value="${keyword}"
+                       class="form-control" placeholder="Tìm theo username, email, họ tên..." style="min-width: 260px;">
+                <button type="submit" class="btn btn-secondary">Tìm kiếm</button>
+                <a th:if="${keyword != null and !#strings.isEmpty(keyword)}" th:href="@{/users}" class="btn btn-secondary">Đặt lại</a>
+            </form>
+            <a th:href="@{/users/create}" class="btn btn-primary">
+                + Thêm Người Dùng
+            </a>
+        </div>
+    </div>
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th style="width: 60px;">ID</th>
+                    <th>Tài Khoản</th>
+                    <th>Họ và Tên</th>
+                    <th>Email</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Vai Trò (Roles)</th>
+                    <th>Trạng Thái</th>
+                    <th style="text-align: center;">Số SP Sở Hữu</th>
+                    <th style="text-align: right; width: 140px;">Hành Động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(users)}">
+                    <td colspan="9" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        Không tìm thấy người dùng nào phù hợp.
+                    </td>
+                </tr>
+                <tr th:each="u : ${users}">
+                    <td style="font-weight: 600;" th:text="${u.id}">1</td>
+                    <td>
+                        <strong style="color: var(--text-main);" th:text="${u.username}">username</strong>
+                    </td>
+                    <td th:text="${u.fullName}">Nguyễn Văn A</td>
+                    <td th:text="${u.email}">a@example.com</td>
+                    <td th:text="${u.phone != null ? u.phone : '-'}">-</td>
+                    <td>
+                        <span th:each="role : ${u.roles}"
+                              th:class="'badge ' + (${role == 'ROLE_ADMIN'} ? 'badge-danger' : 'badge-primary')"
+                              th:text="${role}"
+                              style="margin-right: 4px;">ROLE_USER</span>
+                    </td>
+                    <td>
+                        <span th:if="${u.enabled}" class="badge badge-success">Đã kích hoạt</span>
+                        <span th:unless="${u.enabled}" class="badge badge-warning">Chưa kích hoạt</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="badge badge-primary" style="font-size: 13px;" th:text="${u.productCount}">0</span>
+                    </td>
+                    <td style="text-align: right;">
+                        <div style="display: inline-flex; gap: 6px;">
+                            <a th:href="@{'/users/edit/' + ${u.id}}" class="btn btn-secondary btn-sm">Sửa</a>
+                            <form th:action="@{'/users/delete/' + ${u.id}}" method="post"
+                                  onsubmit="return confirm('Bạn có chắc muốn xóa người dùng này cùng toàn bộ dữ liệu liên quan?');"
+                                  style="display: inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div th:if="${totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/users(page=${currentPage - 1}, keyword=${keyword})}">&laquo;</a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                class="page-item" th:classappend="${currentPage == i} ? 'active'">
+                <a class="page-link" th:href="@{/users(page=${i}, keyword=${keyword})}" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/users(page=${currentPage + 1}, keyword=${keyword})}">&raquo;</a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+</body>
+</html>

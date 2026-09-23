@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <title>Danh Sách Sản Phẩm - Shop Web</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="toolbar">
+        <div>
+            <h1 style="font-size: 24px; font-weight: 800; color: var(--text-main);">Quản Lý Sản Phẩm</h1>
+            <p style="color: var(--text-muted); font-size: 13px;">
+                Tổng cộng <strong th:text="${totalElements}">0</strong> sản phẩm
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <form th:action="@{/products}" method="get" class="search-box">
+                <input type="text" name="keyword" th:value="${keyword}"
+                       class="form-control" placeholder="Tìm theo tên hoặc mô tả..." style="min-width: 240px;">
+                <button type="submit" class="btn btn-secondary">Tìm kiếm</button>
+                <a th:if="${keyword != null and !#strings.isEmpty(keyword)}" th:href="@{/products}" class="btn btn-secondary">Đặt lại</a>
+            </form>
+            <a th:href="@{/products/create}" class="btn btn-primary">
+                + Thêm Sản Phẩm Mới
+            </a>
+        </div>
+    </div>
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th style="width: 70px;">Hình ảnh</th>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Giá Bán</th>
+                    <th>Tồn Kho</th>
+                    <th>Người Tạo</th>
+                    <th>Ngày Tạo</th>
+                    <th style="text-align: right; width: 140px;">Hành Động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(products)}">
+                    <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        Không tìm thấy sản phẩm nào phù hợp.
+                    </td>
+                </tr>
+                <tr th:each="p : ${products}">
+                    <td>
+                        <img th:if="${p.displayImageUrl != null and !#strings.isEmpty(p.displayImageUrl)}"
+                             th:src="${p.displayImageUrl}"
+                             th:alt="${p.name}"
+                             style="width: 50px; height: 50px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                        <div th:unless="${p.displayImageUrl != null and !#strings.isEmpty(p.displayImageUrl)}"
+                             style="width: 50px; height: 50px; border-radius: var(--radius-sm); background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #94a3b8;">
+                            Trống
+                        </div>
+                    </td>
+                    <td>
+                        <strong style="color: var(--text-main); display: block;" th:text="${p.name}">Tên SP</strong>
+                        <small style="color: var(--text-muted); display: block; max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                               th:text="${p.description != null ? p.description : 'Không có mô tả'}"></small>
+                    </td>
+                    <td>
+                        <strong style="color: var(--primary);"
+                                th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">100.000 đ</strong>
+                    </td>
+                    <td>
+                        <span th:if="${p.quantity > 5}" class="badge badge-success" th:text="${p.quantity} + ' cái'"></span>
+                        <span th:if="${p.quantity <= 5 and p.quantity > 0}" class="badge badge-warning" th:text="'Sắp hết: ' + ${p.quantity}"></span>
+                        <span th:if="${p.quantity == 0}" class="badge badge-danger">Hết hàng</span>
+                    </td>
+                    <td>
+                        <span style="font-weight: 500;" th:text="${p.userName != null ? p.userName : 'N/A'}">User</span>
+                    </td>
+                    <td>
+                        <span style="font-size: 13px; color: var(--text-muted);"
+                              th:text="${p.createdAt != null ? #temporals.format(p.createdAt, 'dd/MM/yyyy HH:mm') : '-'}">
+                        </span>
+                    </td>
+                    <td style="text-align: right;">
+                        <div style="display: inline-flex; gap: 6px;">
+                            <a th:href="@{'/products/edit/' + ${p.id}}" class="btn btn-secondary btn-sm">Sửa</a>
+                            <form th:action="@{'/products/delete/' + ${p.id}}" method="post"
+                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này cùng ảnh trên Cloudinary?');"
+                                  style="display: inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div th:if="${totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/products(page=${currentPage - 1}, keyword=${keyword})}">&laquo;</a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                class="page-item" th:classappend="${currentPage == i} ? 'active'">
+                <a class="page-link" th:href="@{/products(page=${i}, keyword=${keyword})}" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/products(page=${currentPage + 1}, keyword=${keyword})}">&raquo;</a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+</body>
+</html>

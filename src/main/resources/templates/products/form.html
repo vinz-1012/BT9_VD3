@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <title th:text="${isEdit ? 'Chỉnh Sửa Sản Phẩm' : 'Thêm Sản Phẩm Mới'}">Sản Phẩm - Shop Web</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div style="max-width: 720px; margin: 0 auto;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div>
+                <h1 style="font-size: 24px; font-weight: 800; color: var(--text-main);"
+                    th:text="${isEdit ? 'Chỉnh Sửa Sản Phẩm' : 'Thêm Sản Phẩm Mới'}">Tiêu đề</h1>
+                <p style="color: var(--text-muted); font-size: 14px;">
+                    Thông tin chi tiết và ảnh sản phẩm lưu trữ trên Cloudinary
+                </p>
+            </div>
+            <a th:href="@{/products}" class="btn btn-secondary btn-sm">&larr; Quay lại danh sách</a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form th:action="${isEdit ? '/products/edit/' + product.id : '/products/create'}"
+                      th:object="${product}"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    <div class="form-group">
+                        <label for="name" class="form-label">Tên sản phẩm *</label>
+                        <input type="text" id="name" th:field="*{name}" class="form-control"
+                               placeholder="Ví dụ: Laptop Dell XPS 15" required>
+                        <span class="form-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description" class="form-label">Mô tả sản phẩm</label>
+                        <textarea id="description" th:field="*{description}" class="form-control" rows="4"
+                                  placeholder="Mô tả chi tiết cấu hình, tính năng, bảo hành..."></textarea>
+                        <span class="form-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="price" class="form-label">Giá bán (VNĐ) *</label>
+                            <input type="number" step="1000" id="price" th:field="*{price}" class="form-control"
+                                   placeholder="Ví dụ: 15000000" required>
+                            <span class="form-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantity" class="form-label">Số lượng tồn kho *</label>
+                            <input type="number" id="quantity" th:field="*{quantity}" class="form-control"
+                                   placeholder="Ví dụ: 50" required>
+                            <span class="form-error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></span>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label class="form-label">
+                            <span th:text="${isEdit ? 'Thay đổi ảnh sản phẩm (Cloudinary)' : 'Ảnh sản phẩm (Cloudinary) *'}">Ảnh</span>
+                        </label>
+                        <div th:if="${isEdit and product.displayImageUrl != null}" style="margin-bottom: 14px; display: flex; align-items: center; gap: 16px; background: #f8fafc; padding: 12px; border-radius: var(--radius); border: 1px solid var(--border);">
+                            <img th:src="${product.displayImageUrl}" alt="Current image"
+                                 style="width: 80px; height: 80px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                            <div>
+                                <strong style="font-size: 13px; color: var(--text-main); display: block;">Ảnh hiện tại trên Cloudinary:</strong>
+                                <small style="font-family: monospace; color: var(--text-muted); display: block;" th:text="${product.cloudinaryPublicId}">public_id</small>
+                                <small style="color: var(--warning); font-size: 12px; margin-top: 4px; display: block;">
+                                    * Khi chọn ảnh mới bên dưới, hệ thống sẽ tự động xóa ảnh cũ trên Cloudinary.
+                                </small>
+                            </div>
+                        </div>
+
+                        <input type="file" name="imageFile" id="imageFile" class="form-control"
+                               accept="image/png, image/jpeg, image/jpg, image/webp">
+                        <small style="color: var(--text-muted); font-size: 12px; display: block; margin-top: 4px;">
+                            Định dạng hỗ trợ: JPG, PNG, WEBP, GIF. Kích thước tối đa: 10MB.
+                        </small>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                        <a th:href="@{/products}" class="btn btn-secondary">Hủy bỏ</a>
+                        <button type="submit" class="btn btn-primary"
+                                th:text="${isEdit ? 'Lưu Thay Đổi' : 'Tạo Sản Phẩm & Upload Ảnh'}">
+                            Xác nhận
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

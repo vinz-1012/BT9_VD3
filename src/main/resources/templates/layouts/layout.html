@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle != null ? pageTitle : 'Hệ Thống Shop Web'}">Shop Web</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <main class="main-content">
+        <div class="container">
+            <div th:if="${successMessage}" class="alert alert-success">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span th:text="${successMessage}"></span>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span th:text="${errorMessage}"></span>
+            </div>
+            <div layout:fragment="content"></div>
+        </div>
+    </main>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

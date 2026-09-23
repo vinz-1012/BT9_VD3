@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/layout}">
+
+<head>
+    <title>Xác Thực Mã OTP - Shop Web</title>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="auth-wrapper">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div
+                        style="width: 56px; height: 56px; background-color: var(--primary-light); color: var(--primary); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                            </path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                    </div>
+                    <h2 class="auth-title">Xác Thực Mã OTP</h2>
+                    <p class="auth-subtitle">
+                        Nhập mã gồm 6 chữ số đã được gửi tới email của bạn để kích hoạt tài khoản
+                    </p>
+                </div>
+
+                <form th:action="@{/verify-otp}" th:object="${verifyOtpDTO}" method="post">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email tài khoản</label>
+                        <input type="email" id="email" th:field="*{email}" class="form-control" readonly
+                            style="background-color: #f8fafc;">
+                        <span class="form-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="otpCode" class="form-label">Mã OTP (6 chữ số) *</label>
+                        <input type="text" id="otpCode" th:field="*{otpCode}" class="form-control" maxlength="6"
+                            style="text-align: center; letter-spacing: 6px; font-size: 20px; font-weight: 700;" required
+                            autofocus>
+                        <span class="form-error" th:if="${#fields.hasErrors('otpCode')}" th:errors="*{otpCode}"></span>
+                        <small
+                            style="color: var(--text-muted); font-size: 12px; display: block; margin-top: 6px; text-align: center;">
+                            Mã OTP có hiệu lực trong 5 phút. Tối đa 5 lần thử.
+                        </small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px;">
+                        Kích Hoạt Tài Khoản
+                    </button>
+                </form>
+                <div
+                    style="margin-top: 24px; text-align: center; border-top: 1px solid var(--border); padding-top: 18px;">
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">Chưa nhận được mã OTP?</p>
+                    <form th:action="@{/resend-register-otp}" method="post" style="display: inline;">
+                        <input type="hidden" name="email" th:value="${verifyOtpDTO.email}">
+                        <button type="submit" class="btn btn-secondary btn-sm">
+                            Gửi Lại Mã OTP
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

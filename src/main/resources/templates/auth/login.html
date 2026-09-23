@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <title>Đăng Nhập - Shop Web</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2 class="auth-title">Đăng Nhập</h2>
+                <p class="auth-subtitle">Đăng nhập để quản lý sản phẩm và dịch vụ</p>
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="username" class="form-label">Tên đăng nhập hoặc Email</label>
+                    <input type="text" id="username" name="username" class="form-control"
+                           placeholder="Nhập username hoặc email" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label for="password" class="form-label" style="margin-bottom: 0;">Mật khẩu</label>
+                        <a th:href="@{/forgot-password}" style="font-size: 12px; font-weight: 600;">Quên mật khẩu?</a>
+                    </div>
+                    <input type="password" id="password" name="password" class="form-control"
+                            required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px;">
+                    Đăng Nhập
+                </button>
+
+                <div style="text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-muted);">
+                    Chưa có tài khoản?
+                    <a th:href="@{/register}" style="font-weight: 700;">Đăng ký ngay</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

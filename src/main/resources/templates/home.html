@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <title>Trang Chủ - Hệ Thống Bán Hàng</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="hero-banner">
+        <div class="hero-content">
+            <h1 class="hero-title">Chào Mừng Đến Với Shop Web MVC</h1>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <a th:href="@{/products}" class="btn btn-secondary">Xem Danh Sách Sản Phẩm</a>
+                <a sec:authorize="isAnonymous()" th:href="@{/register}" class="btn btn-primary">Đăng Ký Thành Viên Ngay</a>
+            </div>
+        </div>
+    </div>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon users">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${totalUsers}">0</h3>
+                <p>Tổng Số Người Dùng</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon products">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${totalProducts}">0</h3>
+                <p>Tổng Số Sản Phẩm</p>
+            </div>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 22px; font-weight: 800; color: var(--text-main);">Sản Phẩm Mới Cập Nhật</h2>
+        <a th:href="@{/products}" style="font-weight: 600; font-size: 14px;">Xem tất cả &rarr;</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(recentProducts)}" class="card" style="text-align: center; padding: 40px;">
+        <p style="color: var(--text-muted); font-size: 15px;">Chưa có sản phẩm nào trong hệ thống.</p>
+        <div style="margin-top: 15px;" sec:authorize="isAuthenticated()">
+            <a th:href="@{/products/create}" class="btn btn-primary btn-sm">Thêm Sản Phẩm Mới</a>
+        </div>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(recentProducts)}" class="product-grid">
+        <div th:each="p : ${recentProducts}" class="product-card">
+            <div class="product-img-wrapper">
+                <img th:if="${p.displayImageUrl != null and !#strings.isEmpty(p.displayImageUrl)}"
+                     th:src="${p.displayImageUrl}"
+                     th:alt="${p.name}"
+                     class="product-img">
+                <div th:unless="${p.displayImageUrl != null and !#strings.isEmpty(p.displayImageUrl)}"
+                     style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #e2e8f0; color: #94a3b8; font-size: 13px;">
+                    Chưa có ảnh
+                </div>
+                <div class="product-badge" th:text="'Kho: ' + ${p.quantity}">Kho: 10</div>
+            </div>
+
+            <div class="product-info">
+                <h3 class="product-title" th:text="${p.name}">Tên sản phẩm</h3>
+                <p class="product-desc" th:text="${p.description != null ? p.description : 'Không có mô tả'}">Mô tả sản phẩm</p>
+                <div class="product-meta">
+                    <span class="product-price" th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">100.000 VNĐ</span>
+                    <a th:href="@{/products}" class="btn btn-secondary btn-sm">Chi tiết</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

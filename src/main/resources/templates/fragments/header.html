@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<header th:fragment="header" class="navbar">
+    <div class="container nav-container">
+        <a th:href="@{/}" class="brand">
+            <div class="brand-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+            </div>
+            <span>SHOP WEB</span>
+        </a>
+
+        <ul class="nav-menu">
+            <li><a th:href="@{/}" class="nav-link">Trang Chủ</a></li>
+            <li sec:authorize="isAuthenticated()">
+                <a th:href="@{/products}" class="nav-link">Quản Lý Sản Phẩm</a>
+            </li>
+            <li sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <a th:href="@{/users}" class="nav-link">Quản Lý Người Dùng</a>
+            </li>
+        </ul>
+
+        <div class="nav-actions">
+            <div sec:authorize="isAnonymous()" style="display: flex; gap: 8px;">
+                <a th:href="@{/login}" class="btn btn-secondary btn-sm">Đăng Nhập</a>
+                <a th:href="@{/register}" class="btn btn-primary btn-sm">Đăng Ký</a>
+            </div>
+            <div sec:authorize="isAuthenticated()" style="display: flex; align-items: center; gap: 12px;">
+                <div style="font-size: 13px; font-weight: 600; color: #334155;">
+                    <span>Xin chào, </span>
+                    <strong style="color: var(--primary);" sec:authentication="name">User</strong>
+                    <span sec:authorize="hasAuthority('ROLE_ADMIN')" class="badge badge-primary" style="margin-left: 4px;">Admin</span>
+                </div>
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-secondary btn-sm" style="color: var(--danger) !important; border-color: #fecaca;">
+                        Đăng Xuất
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>
+</body>
+</html>

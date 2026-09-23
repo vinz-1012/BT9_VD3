@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout}">
+<head>
+    <title>Đăng Ký Tài Khoản - Shop Web</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="auth-wrapper">
+        <div class="auth-card" style="max-width: 480px;">
+            <div class="auth-header">
+                <h2 class="auth-title">Đăng Ký Tài Khoản</h2>
+                <p class="auth-subtitle">Tạo tài khoản để bắt đầu trải nghiệm hệ thống</p>
+            </div>
+
+            <form th:action="@{/register}" th:object="${registerDTO}" method="post">
+                <div class="form-group">
+                    <label for="username" class="form-label">Tên đăng nhập *</label>
+                    <input type="text" id="username" th:field="*{username}" class="form-control"
+                           >
+                    <span class="form-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="fullName" class="form-label">Họ và tên *</label>
+                    <input type="text" id="fullName" th:field="*{fullName}" class="form-control"
+                           >
+                    <span class="form-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Địa chỉ Email (Nhận OTP) *</label>
+                    <input type="email" id="email" th:field="*{email}" class="form-control"
+                           placeholder="name@example.com">
+                    <span class="form-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" class="form-label">Số điện thoại</label>
+                    <input type="text" id="phone" th:field="*{phone}" class="form-control"
+                           >
+                    <span class="form-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Mật khẩu *</label>
+                    <input type="password" id="password" th:field="*{password}" class="form-control"
+                           placeholder="Tối thiểu 6 ký tự">
+                    <span class="form-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Xác nhận mật khẩu *</label>
+                    <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control"
+                           placeholder="Nhập lại mật khẩu">
+                    <span class="form-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px;">
+                    Đăng Ký & Nhận Mã OTP
+                </button>
+
+                <div style="text-align: center; margin-top: 24px; font-size: 13px; color: var(--text-muted);">
+                    Đã có tài khoản?
+                    <a th:href="@{/login}" style="font-weight: 700;">Đăng nhập</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
